@@ -1,0 +1,18 @@
+# Security: API Keys and Secrets
+.env
+credentials.json
+
+# Security: Google Calendar Auth Tokens
+token.json
+token_*.json
+
+# Python System Files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual Environments
+venv/
+env/
+.venv/
