@@ -24,30 +24,40 @@ Before running the bot, ensure you have the following installed and configured:
 
 **1. Clone the repository:**
 ```bash
-git clone https://github.com/yourusername/AI-Calendar-Manager-Telegram-Google-Calendar-.git
+git clone [https://github.com/yourusername/AI-Calendar-Manager-Telegram-Google-Calendar-.git](https://github.com/yourusername/AI-Calendar-Manager-Telegram-Google-Calendar-.git)
 cd AI-Calendar-Manager-Telegram-Google-Calendar-
+```
 
-2. Install dependencies:
+**2. Install dependencies:**
+```bash
 pip install -r requirements.txt
+```
 
-3. Configure Environment Variables:
-Rename .env.example.txt to .env and add your API keys:
+**3. Configure Environment Variables:**
+Rename `.env.example.txt` to `.env` and add your API keys:
+```text
 TELEGRAM_CODE=your_telegram_bot_token_here
 GEMINI_API_KEY=your_gemini_api_key_here
-(Note: While the bot uses Ollama locally for privacy/cost, the code currently initializes the Google Gemini client as a backup/alternative, so a placeholder key is required in the .env file to prevent startup errors).
+```
+*(Note: While the bot uses Ollama locally for privacy/cost, the code currently initializes the Google Gemini client as a backup/alternative, so a placeholder key is required in the `.env` file to prevent startup errors).*
 
-4. Google Credentials:
-Place your credentials.json file directly into the root folder of the project.
+**4. Google Credentials:**
+Place your `credentials.json` file directly into the root folder of the project.
 
-5. Run the Bot:
+**5. Run the Bot:**
+```bash
 python Python_code_sever_version.py
+```
 
-📖 How to Use
-Start a chat with your bot on Telegram and send /connect.
-Click the provided link to authorize your Google Calendar.
-Log in with Google. When the final page fails to load (showing localhost refused to connect), copy the entire URL from your browser's address bar.
-Paste that full URL back into the Telegram chat to complete the connection.
-Start managing your calendar naturally!
-"Meet Tommy tomorrow at 3pm"
-"View Schedule"
-"Urgency List"
+---
+
+## 📖 How to Use
+
+1. Start a chat with your bot on Telegram and send `/connect`.
+2. Click the provided link to authorize your Google Calendar.
+3. Log in with Google. When the final page fails to load (showing `localhost refused to connect`), **copy the entire URL** from your browser's address bar.
+4. Paste that full URL back into the Telegram chat to complete the connection.
+5. Start managing your calendar naturally!
+   * *"Meet Tommy tomorrow at 3pm"*
+   * *"View Schedule"*
+   * *"Urgency List"*
