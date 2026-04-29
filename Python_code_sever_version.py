@@ -156,7 +156,7 @@ async def confirm_connection(update: Update, context: ContextTypes.DEFAULT_TYPE)
         "Here is what I can do for you:\n\n"
         "📅 **Adding Events:** Add any event you would like by typing \n"
         "🗑️ **Deleting Events:** Choose from a list of event to delete\n"
-        "🚨 **View Urgent Tasks:** Instantly see your next 3 tasks.\n"
+        "🚨 **View Urgent Tasks:** Instantly see tasks that are coming up in the next 7 days.\n"
         "📅 **See Full Schedule:** Get your complete upcoming schedule."
     )
 
