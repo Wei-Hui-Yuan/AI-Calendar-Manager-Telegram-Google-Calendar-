@@ -304,8 +304,25 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE, ove
                 prefix = "⚠️ "
             else:
                 prefix = ""
-            display_start = dt.strftime('%b %d %Y at %I:%M %p')
-            msg += f"• {prefix}{e['summary']} ({display_start})\n"
+            
+            if 'dateTime' in e['start']:
+                start_time = dt.strftime('%I:%M %p')
+                
+                end_raw = e['end'].get('dateTime')
+                end_dt = dateparser.parse(end_raw)
+                if end_dt.tzinfo is None:
+                    end_dt = sgt.localize(end_dt)
+                else:
+                    end_dt = end_dt.astimezone(sgt)
+                end_time = end_dt.strftime('%I:%M %p')
+                
+                time_display = f"{start_time} - {end_time}"
+            else:
+                time_display = "All Day"
+                
+            display_date = dt.strftime('%b %d %Y')
+            
+            msg += f"• {prefix}**{e['summary']}** ({display_date} | {time_display})\n"
             
         await reply_target.reply_text(msg, parse_mode='Markdown')
         await reply_target.reply_text("What would you like to do next?", reply_markup=get_main_dashboard())
@@ -319,7 +336,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE, ove
             raw_date_string = raw_date_string.replace('coming', 'next')
 
         elif 'this' in raw_date_string:
-            raw_date_string = raw_date_string.replace("this ", "")        
+            raw_date_string = raw_date_string.replace("this ", "")   
+
+        elif 'later' in raw_date_string:
+            raw_date_string = raw_date_string.replace("later", "today")     
         data['raw_date'] = raw_date_string
 
         duration_str = str(data.get('duration_minutes', '60'))
@@ -416,8 +436,14 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE, ove
         for i, event in enumerate(events):
             event_id = event['id']
             summary = event.get('summary', '(No Title)')
+            start_raw = event['start'].get('dateTime', event['start'].get('date'))
+            parsed_start = dateparser.parse(start_raw)
+            if 'dateTime' in event['start']:
+                display_time = parsed_start.strftime('%d %b %I:%M %p')
+            else:
+                display_time = parsed_start.strftime('%d %b (All Day)')
             context.user_data['event_cache'][str(i)] = event_id
-            keyboard.append([InlineKeyboardButton(f"❌ {summary}", callback_data=f"del_{i}")])
+            keyboard.append([InlineKeyboardButton(f"❌ {summary} ({display_time})", callback_data=f"del_{i}")])
 
         reply_markup = InlineKeyboardMarkup(keyboard)
         await reply_target.reply_text("Which event would you like to delete?", reply_markup=reply_markup)
@@ -477,18 +503,22 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 event_date = event_dt.date()
                 
                 diff_days = (event_date - now_date).days
-
-                if diff_days == 0:
-                    relative = 'Today'
-                elif diff_days == 1:
-                    relative = 'Tomorrow'
-                elif diff_days < 0:
-                    relative = 'Past'
-                else:
-                    relative = f'In {diff_days} days'
                     
                 date_brief = event_date.strftime('%d %b %Y')
-                btn_text = f"🗑️ [{date_brief}] {e['summary']} ({relative})"
+                if 'dateTime' in e['start']:
+                    end_dt = dateparser.parse(e['end'].get('dateTime'))
+                    if end_dt.tzinfo is None:
+                        end_dt = sgt.localize(end_dt)
+                    else:
+                        end_dt = end_dt.astimezone(sgt)
+                    
+                    duration_mins = int((end_dt - event_dt).total_seconds() / 60)
+                    start_time = event_dt.strftime('%I:%M %p')
+                    extra_info = f"{start_time} | {duration_mins}m"
+                else:
+                    extra_info = "All Day"
+
+                btn_text = f"🗑️ [{date_brief}] {e['summary']} ({extra_info})"
                 short_id = str(i)
                 
                 context.user_data['event_cache'][short_id] = e['id']
