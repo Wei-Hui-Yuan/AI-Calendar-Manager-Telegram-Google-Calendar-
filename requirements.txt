@@ -1,0 +1,9 @@
+python-telegram-bot>=20.0
+google-api-python-client
+google-auth-httplib2
+google-auth-oauthlib
+google-genai
+dateparser
+pytz
+python-dotenv
+ollama
