@@ -329,18 +329,18 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE, ove
     
     elif data['intent'] == 'add':
         raw_date_string = data['raw_date'].lower()
-        if "following" in raw_date_string:
-            raw_date_string = raw_date_string.replace("following", "next")
-        
-        elif 'coming' in raw_date_string:
-            raw_date_string = raw_date_string.replace('coming', 'next')
+        raw_date_string = raw_date_string.replace("later", "today")
+        raw_date_string = raw_date_string.replace("this ", "")
+        raw_date_string = raw_date_string.replace("the ", "")
+        raw_date_string = raw_date_string.replace("coming ", "")
+        raw_date_string = raw_date_string.replace("following ", "")
 
-        elif 'this' in raw_date_string:
-            raw_date_string = raw_date_string.replace("this ", "")   
+        days_of_week = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+        for day in days_of_week:
+            if f"next {day}" in raw_date_string:
+                raw_date_string = raw_date_string.replace(f"next {day}", day)
 
-        elif 'later' in raw_date_string:
-            raw_date_string = raw_date_string.replace("later", "today")     
-        data['raw_date'] = raw_date_string
+        data['raw_date'] = raw_date_string.strip()
 
         duration_str = str(data.get('duration_minutes', '60'))
         duration_digits = ''.join(filter(str.isdigit, duration_str))
@@ -365,6 +365,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE, ove
             print(f"Failed to parse: {raw_date_string}")
             await reply_target.reply_text("I couldn't understand that date. Try 'Go to Gym at Friday 2pm'.")
             return
+
         
         if parsed_date.tzinfo is None:
             parsed_date = sgt.localize(parsed_date)
